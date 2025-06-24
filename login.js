@@ -401,6 +401,49 @@ module.exports = {
 
       return serverSideSdkApiKey;      
     },
+
+    createClientSideSdkApiKey: async function createClientSideSdkApiKey(apiKey, token, accountId, projectId, projectName, environmentId, environmentName, orgId) {
+      console.log('createClientSideSdkApiKey');
+      console.log('environmentId', environmentId);
+
+      let clientSideSdkApiKey;
+
+      //
+      //
+      // Legacy Split API for creating a server-side SDK API key
+      //
+      const url = 'https://fme-prod.harness.io/internal/api/apiTokens';
+      const identifier = 'fragile_' + new Date().getTime();
+
+      const body = {
+        orgId: orgId,
+        name: identifier,
+        scope: 'SHARED',
+        workspaceIds:[
+          projectId
+        ],
+        environmentIds:[environmentId]
+      };
+
+
+      console.log('create SDK key body', body);
+      await axios.post(url, body, {
+        headers: {
+          'x-api-key': apiKey,
+          'content-type': 'application/json',
+          'Fme-Origin': 'app',
+          'Fme-Account-Id': accountId,
+          'Cookie': `fme-token=${token};token=${token}`                   
+        }                
+      }).then(function(response) {
+        console.log('create SDK Split response', response.data);
+        clientSideSdkApiKey = response.data.id;
+      }).catch(function(error) {
+        console.log(error);
+      })
+
+      return clientSideSdkApiKey;      
+    },    
     getUserSettings: async function getUserSettings(apiKey, token, accountId, defaultAccountId, existingProject) {
       console.log('getUserSettings');
 
