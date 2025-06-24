@@ -127,12 +127,12 @@ export const handler = async (e) => {
     }
     timings.push({ description: 'create splits', elapsedTime: new Date().getTime() - start, success: true });
 
-    const serverSideSdkApiKey = await createClientSideSdkApiKey(apiKey, token, accountId, projectId, projectName, environmentId, environmentName, orgId);
+    const clientSideSdkApiKey = await createClientSideSdkApiKey(apiKey, token, accountId, projectId, projectName, environmentId, environmentName, orgId);
     timings.push({ description: 'create api key', elapsedTime: new Date().getTime() - start, success: true });
 
     // return buildResponse(200, 'finished provisioning', timings);
     return buildResponse(200, 'finished provisioning', timings, {
-      sdkKey: serverSideSdkApiKey
+      sdkKey: clientSideSdkApiKey
     });
 
   } catch (err) {
